@@ -21,8 +21,9 @@ class MainActivity : AppCompatActivity() {
         queue = Volley.newRequestQueue(this)
 
         binding.btnUpdatePokemon.setOnClickListener {
-           getPokemonList(Integer.parseInt(binding.etPokemonAmount.text.toString()))
+            getPokemonList(Integer.parseInt(binding.etPokemonAmount.text.toString()))
         }
+
 
     }
 
@@ -31,15 +32,20 @@ class MainActivity : AppCompatActivity() {
 
         val jsonRequest = JsonObjectRequest(url, Response.Listener<JSONObject>{response ->
             Log.i("JSONRESPONSE", response.getJSONArray("results").toString())
+
+            binding.rvPokemonEntries.adapter = MainAdapter(response.getJSONArray("results"))
         },
-        Response.ErrorListener { error ->
-            Log.w("JSONRESPONSE", error.message as String)
-        })
+            Response.ErrorListener { error ->
+                Log.w("JSONRESPONSE", error.message as String)
+            })
         queue.add(jsonRequest)
+
     }
 
     override fun onStop(){
         super.onStop()
         queue.cancelAll("Stopped")
     }
+
+
 }
